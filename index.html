@@ -1,17 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
+
 <body>
-    <h1>Cadastro de Livros</h1>
-    <input id="nomeLivro" placeholder="Nome" type="text" >
-    <input id="autorLivro" placeholder="Autor" type="text" >
-    <input id="anoLivro" placeholder="Ano" type="number" >
-    <button onclick="adicionar()">adicionar Livro</button>
-    <button onclick="mostrarLivros()">Mostrar</button>
+
+    <header>
+        <img class="logo" src="logo.jpeg" alt="">
+    </header>
+    <div id="tudo">
+    <h1>Cadastro de livros</h1>
+    <input id="nomeLivro" placeholder="Nome" type="text">
+    <input id="autorLivro" placeholder="Autor" type="text">
+    <input id="anoLivro" placeholder="Ano" type="number">
+    <div class="botoes">
+        <button onclick="adicionar()">Adicionar Livro</button>
+        <button onclick="mostrarLivros()">Mostrar</button>
+        <button onclick="apagarLivros()">Apagar</button>
+    </div>
+    <p id="Xlivros"></p>
+    <p id="Cadastro"></p></div>
+
+    </div>
+    <div class="carrossel" id="carrossel">
+        <img class="img" id="carrosselImagem" src="" alt="Imagem do Carrossel">
+        <div class="botoes">
+            <button class="bot" id="anterior"> < </button>
+            <button class="bot" id="proximo"> > </button>
+        </div>
+    </div>
 
     <script>
         let biblioteca = [];
@@ -22,19 +44,78 @@
                 autor: autor,
                 ano: ano
             };
-            biblioteca.push(livro)
+            biblioteca.push(livro);
+            atualizarQuantidadeLivros();
+            if (biblioteca.length > 0) {
+                document.querySelector('.carrossel').style.display = 'block';
+            }
+
+
         }
 
-        function adicionar(){
+        function adicionar() {
             let nome = document.getElementById('nomeLivro').value;
             let autor = document.getElementById('autorLivro').value;
             let ano = document.getElementById('anoLivro').value;
             cadastro(nome, autor, ano);
+
+            imgIndice = biblioteca.length - 1;
+            carregar();
+            document.getElementById('carrossel').style.display = 'block';
         }
 
-        function mostrarLivros(){
-            console.log(`resultado:${biblioteca[1].ano}`);
+
+        function mostrarLivros() {
+            for (let x of biblioteca) {
+                console.log(x.titulo, x.autor, x.ano);
+
+            }
         }
+
+        function apagarLivros() {
+            biblioteca.length = 0;
+            atualizarQuantidadeLivros();
+            document.getElementById('carrossel').style.display = 'none';
+        }
+        function atualizarQuantidadeLivros() {
+            const quantidadeLivros = biblioteca.length;
+            const quantidadeLivrosText = quantidadeLivros === 1 ? '1 livro cadastrado' : `${quantidadeLivros} livros cadastrados`;
+            document.getElementById('Xlivros').textContent = quantidadeLivrosText;
+
+            while (quantidadeLivros === 0) {
+                document.getElementById('Cadastro').textContent = 'Cadastre um livro';
+                return;
+            }
+            document.getElementById('Cadastro').textContent = '';
+        }
+
+
+        let imgIndice = 0;
+        const IMAGENS = ['diario.jpg', 'domquixote.jpeg', 'aneis.jpg', 'crepusculo.jpg', 'anne.jpg'];
+        const prevButton = document.getElementById('anterior');
+        const nextButton = document.getElementById('proximo');
+        var IMG = document.getElementById('carrosselImagem');
+        function carregar() {
+            IMG.src = IMAGENS[imgIndice];
+        }
+        prevButton.addEventListener('click', () => {
+            if (imgIndice === 0) {
+                imgIndice = IMAGENS.length - 1;
+            } else {
+                --imgIndice;
+            }
+            carregar();
+        });
+        nextButton.addEventListener('click', () => {
+            if (imgIndice === IMAGENS.length - 1) {
+                imgIndice = 0;
+            } else {
+                ++imgIndice;
+            }
+            carregar();
+        });
+        carregar();
     </script>
 </body>
+
 </html>
